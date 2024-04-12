@@ -16,6 +16,80 @@
   Once you've implemented the logic, test your code by running
 */
 
-class Calculator {}
+class Calculator {
+  constructor() {
+    this.result = 0
+  }
+
+  add(num) { this.result = this.result + num }
+  subtract(num) { this.result = this.result - num }
+  multiply(num) { this.result = this.result * num }
+  divide(num) {
+    if (num === 0) {
+      throw Error()
+    }
+    this.result = this.result / num
+  }
+  clear() { this.result = 0 }
+  getResult() { return this.result }
+  calculate(str) {
+    this.result = eval(str)
+    if (this.result === Infinity) {
+      throw Error()
+    }
+  }
+  // calculate(string) {
+  //   const expression = string.split(' ')
+  //   let result = 0
+  //   let operator = '+'
+  //   let num = 0
+  //   let stack = []
+
+  //   for (let i = 0; i < expression.length; i++) {
+  //     if (expression[i] === '+' || expression[i] === '-' || expression[i] === '*' || expression[i] === '/') {
+  //       operator = expression[i]
+  //     } else if (expression[i] === '(') {
+  //       stack.push({ result, operator })
+  //       result = 0
+  //       operator = '+'
+  //     } else if (expression[i] === ')') {
+  //       const { result: prevResult, operator: prevOperator } = stack.pop()
+  //       if (prevOperator === '+') {
+  //         result = prevResult + result
+  //       } else if (prevOperator === '-') {
+  //         result = prevResult - result
+  //       } else if (prevOperator === '*') {
+  //         result = prevResult * result
+  //       } else if (prevOperator === '/') {
+  //         if (result === 0) {
+  //           throw Error()
+  //         }
+  //         result = prevResult / result
+  //       } else {
+  //         throw Error()
+  //       }
+  //     } else {
+  //       const num = Number.parseFloat(expression[i])
+  //       if (isNaN(num)) {
+  //         throw Error()
+  //       }
+  //       if (operator === '+') {
+  //         result = result + num
+  //       } else if (operator === '-') {
+  //         result = result - num
+  //       } else if (operator === '*') {
+  //         result = result * num
+  //       } else if (operator === '/') {
+  //         if (num === 0) {
+  //           throw Error()
+  //         }
+  //         result = result / num
+  //       }
+  //     }
+  //   }
+
+  //   return result
+  // }
+}
 
 module.exports = Calculator;
