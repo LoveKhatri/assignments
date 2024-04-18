@@ -39,11 +39,94 @@
 
   Testing the server - run `npm run test-todoServer` command in terminal
  */
-  const express = require('express');
-  const bodyParser = require('body-parser');
-  
-  const app = express();
-  
-  app.use(bodyParser.json());
-  
-  module.exports = app;
+const express = require('express');
+const bodyParser = require('body-parser');
+const fs = require("fs")
+
+const app = express();
+
+function getAllTodos() {
+    fs.readFile("./todos.json", "utf8", async (err, data) => {
+        if (err) return err;
+        return JSON.parse(data)
+    })
+}
+
+function getTodo(id) {
+    const allTodos = getAllTodos()
+
+    const todo = allTodos.findIndex(t => t.id === id)
+    if (!todo || todo === -1) return false
+    return todo
+}
+
+function validateId(req, res, next) {
+    const id = req.params.id;
+    if (!id) return res.json({ "msg": "Invalid ID!" })
+
+    if (isNaN(parseInt(id))) return res.json({ "msg": "Invalid ID!" })
+
+    next();
+}
+
+function updateTodo(id, data) {
+    const allTodos = getAllTodos()
+    const index = getTodo(id);
+
+    const newData = allTodos.splice(index, 1, data)
+
+    fs.writeFileSync("./todos.json", newData)
+}
+
+app.use(bodyParser.json());
+
+app.get('/todos', async (req, res) => {
+    const allTodos = getAllTodos()
+
+    res.json(allTodos)
+})
+app.get('/todos/:id', validateId, async (req, res) => {
+    const allTodos = JSON.parse(require("./todos.json"))
+
+    const id = req.params.id;
+
+    const todo = getTodo(id)
+    if (!todo) res.status(404).json({ "msg": "not found" })
+
+    return res.status(200).json(todo)
+})
+
+app.post('/todos', async (req, res) => {
+    const data = req.body;
+
+})
+app.put('/todos/:id', validateId, async (req, res) => {
+    const allTodos = getAllTodos()
+    const id = req.params.id;
+    const body = req.body;
+
+    const index = getTodo(id)
+
+
+})
+app.delete('/todos/:id', async (req, res) => {
+    const allTodos = JSON.parse(require('./todos.json'))
+
+    const id = req.params.id;
+    if (isNaN(parseInt(id))) {
+        return res.status(401).json({ "msg": "Invalid ID!" })
+    }
+
+    const todo = allTodos.find(todo => todo.id === id)
+    if (!todo) {
+        return res.status(404).json({ "msg": "Not Found" })
+    }
+
+    const newData = allTodos.splice(allTodos.findIndex(t => t.id === id), 1)
+
+    fs.writeFileSync("./todos.json", newData)
+})
+
+app.listen(3000)
+
+module.exports = app;
