@@ -5,15 +5,17 @@ import { useState } from "react";
 export function Assignment1() {
     const [count, setCount] = useState(0);
 
-    // Your code starts here
-    function handleIncrement() {
+    const handleIncrement = useCallback(() => {
+        setCount(function (currentCount) {
+            return currentCount + 1;
+        })
+    }, [])
 
-    }
-
-    function handleDecrement() {
-        
-    }
-    // Your code ends here
+    const handleDecrement = useCallback(() => {
+        setCount(count => {
+            return count - 1
+        });
+    }, []);
 
     return (
         <div>
