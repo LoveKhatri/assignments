@@ -7,31 +7,53 @@
     let todoState = [];
     let oldTodoState = [];
 
-    function addTodoToDom() {
+    function addTodoToDom(todo) {
+      const div = document.getElementById("todos");
+
+      const todoElement = document.createElement("div")
       
+      todoElement.setAttribute("id", todo.id)
+      
+      todoElement.innerHTML = `
+      <h3>${todo.title}</h3>
+      <h4>${todo.description}</h4>`
+
+      div.appendChild(todoElement)
     }
 
     function removeTodoFromDom(todo) {
-      
+      const todoDiv = document.getElementById("todos");
+
+      const remove = document.getElementById(todo.id);
+
+      todoDiv.removeChild(remove);
     }
 
     function updateTodoInDom(oldTodo, newTodo) {
-        
+        const todoDiv = document.getElementById(oldTodo.id);
+
+        todoDiv.innerHTML = `
+        <h3>${newTodo.title}</h3>
+        <h4>${newTodo.description}</h4>
+        `
     }
 
     function updateState(newTodos) {
+      console.log(newTodos)
       // calculate the diff b/w newTodos and oldTodos.
       // More specifically, find out what todos are - 
       // 1. added
       // 2. deleted
       // 3. updated
-      const added = [];
-      const deleted = [];
-      const updated = [];
-      // calculate these 3 arrays
-      // call addTodo, removeTodo, updateTodo functions on each of the
-      // elements
-      oldTodoState = newTodos;
+      const added = newTodos.filter(todo => !oldTodoState.some(oldTodo => oldTodo.id === todo.id));
+      const deleted = oldTodoState.filter(todo => !newTodos.some(newTodo => newTodo.id === todo.id));
+      const updated = newTodos.filter(newTodo => oldTodoState.some(oldTodo => oldTodo.id === newTodo.id && oldTodo.title !== newTodo.title && oldTodo.description !== newTodo.description));
+
+      added.forEach(element => {        addTodoToDom(element);      });
+      deleted.forEach(element => {        removeTodoFromDom(element);      });
+      updated.forEach(element => {        updateTodoInDom(oldTodoState.find(todo => todo.id === element.id), element);      });
+      
+      oldTodoState = [...newTodos];
     }
 
     function addTodo() {
